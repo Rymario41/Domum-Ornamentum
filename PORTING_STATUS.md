@@ -1,6 +1,29 @@
 # Domum Ornamentum porting status
 
-## Current batch: TriState package migration
+## Current batch: ModelData package migration
+
+- Starting checkpoint: 323c7d7 on port/26.3; initial Git working tree was clean.
+- Scope: three rendering-model imports only. Exact Java files changed:
+  - src/main/java/com/ldtteam/domumornamentum/client/model/baked/MateriallyTexturedBakedModel.java
+  - src/main/java/com/ldtteam/domumornamentum/client/model/baked/RetexturedBakedModelBuilder.java
+  - src/main/java/com/ldtteam/domumornamentum/client/model/baked/SpecificRenderTypeBakedModelWrapper.java
+- Old type/import: net.neoforged.neoforge.client.model.data.ModelData.
+- Verified NeoForge 26.3 replacement: net.neoforged.neoforge.model.data.ModelData. javap on the resolved neoforge-26.3.0.10-beta-universal.jar confirms the class, EMPTY, builder(), get(), Builder.with()/build(), and IBlockEntityExtension.getModelData() returning this type.
+- Exact changes: replace that import in each of the three files. No method signatures/bodies, model integration, ambient occlusion, geometry, rendering behavior or other imports were changed.
+- Previously displayed ModelData diagnostics targeted: **9** — MateriallyTexturedBakedModel 5, RetexturedBakedModelBuilder 1, SpecificRenderTypeBakedModelWrapper 3.
+- All targeted ModelData package/type diagnostics disappeared: **YES**. No new ModelData-related diagnostic was displayed. Source excerpts for other missing types can still contain the name ModelData.
+- Verified java -version and javac -version: **25.0.4** before Gradle.
+- Verification: ./gradlew.bat compileJava — **BUILD FAILED in 2s**, exit code 1; compileApiJava UP-TO-DATE.
+- Remaining displayed errors: **100**, plus 20 warnings. javac's diagnostic limit remains 100; the full remaining error total is unknown.
+- Remaining displayed diagnostics in MateriallyTexturedBakedModel: **36** — RenderType 15, BakedModel 10, ChunkRenderTypeSet 4, BakedQuad 3, ItemOverrides 2, ItemTransforms 2.
+- Remaining displayed diagnostics in RetexturedBakedModelBuilder: **22** — BakedModel 11, RenderType 5, BakedQuad 4, IQuadTransformer 1, SimpleBakedModel 1.
+- Remaining displayed diagnostics in SpecificRenderTypeBakedModelWrapper: **22** — RenderType 6, BakedModel 5, BakedQuad 3, BlockAndTintGetter 2, ChunkRenderTypeSet 2, ItemOverrides 2, ItemTransforms 2.
+- Removing the nine targeted diagnostics exposed four further non-ModelData diagnostics in SpecificRenderTypeBakedModelWrapper and five in unchanged MateriallyTexturedGeometry. Unrelated existing source errors were not repaired. This capped build does not establish full model/rendering compatibility.
+- Evidence: build/models-modeldata-compile.log, compared with build/tristate-package-compile.log.
+- Next recommended small batch: separately authorize the verified fluid-overlay type/import migration to BlockAndLightGetter in FramedLightBlock.java, preserving its method body and excluding client model/color code.
+- Outside these three Java files, only PORTING_STATUS.md changed. No other sources, API, build files, resources, access transformers, workflows or metadata changed. No commit or push.
+
+## Previous batch: TriState package migration
 
 - Starting checkpoint: 5864dc1 on port/26.3; initial Git working tree was clean.
 - Only Java file changed: src/main/java/com/ldtteam/domumornamentum/client/model/baked/SpecificRenderTypeBakedModelWrapper.java. The requested client/model path without baked does not exist; this is the existing wrapper location.
