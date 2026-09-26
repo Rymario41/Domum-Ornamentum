@@ -1,6 +1,23 @@
 # Domum Ornamentum porting status
 
-## Current batch: block world-access interface migration
+## Current batch: TriState package migration
+
+- Starting checkpoint: 5864dc1 on port/26.3; initial Git working tree was clean.
+- Only Java file changed: src/main/java/com/ldtteam/domumornamentum/client/model/baked/SpecificRenderTypeBakedModelWrapper.java. The requested client/model path without baked does not exist; this is the existing wrapper location.
+- Old type/import: net.neoforged.neoforge.common.util.TriState.
+- Verified Minecraft 26.3 replacement: net.minecraft.util.TriState. Inspected the local patched Minecraft enum source; javap on the resolved NeoForge 26.3.0.10-beta universal jar additionally confirms BlockStateModelPartExtension.ambientOcclusion() returns this type.
+- Exact source change: replaced the single import. No method, signature, useAmbientOcclusion body, rendering behavior, model architecture or other import was changed.
+- Original TriState diagnostic disappeared: **YES**. No new TriState-related diagnostic was displayed. Occurrences of TriState in source excerpts for other missing types are not TriState diagnostics.
+- Verified java -version and javac -version: **25.0.4** before Gradle.
+- Verification: ./gradlew.bat compileJava — **BUILD FAILED in 2s**, exit code 1; compileApiJava UP-TO-DATE.
+- Remaining displayed errors: **100**, plus 20 warnings. javac's diagnostic limit remains 100; the full remaining total is unknown.
+- Remaining displayed diagnostics in this wrapper: **21** — RenderType 5; BakedModel 4; BakedQuad 3; ModelData 3 (including its missing package import); ItemOverrides 2; ItemTransforms 2; BlockAndTintGetter 1; ChunkRenderTypeSet 1.
+- Comparison with the previous output: one TriState import diagnostic removed, one additional pre-existing ItemOverrides diagnostic exposed at getOverrides(). Unrelated source problems remain untouched; ambient occlusion compatibility is not established by this import-only batch.
+- Evidence: build/tristate-package-compile.log, compared with build/block-world-access-compile.log.
+- Next recommended small batch: separately authorize fluid-overlay type/import migration to BlockAndLightGetter in FramedLightBlock.java, preserving its method body and excluding model/color classes.
+- Outside this wrapper, only PORTING_STATUS.md changed. No unrelated source, API, build, resource, access-transformer, workflow or metadata changes. No commit or push.
+
+## Previous batch: block world-access interface migration
 
 - Starting checkpoint: b351925 on port/26.3; initial Git working tree was clean.
 - Exactly two Java files changed:
