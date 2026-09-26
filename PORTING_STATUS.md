@@ -1,6 +1,23 @@
 # Domum Ornamentum porting status
 
-## Current batch: block-entity component input signature
+## Current batch: ModelData package migration
+
+- Starting checkpoint: 024c51f on port/26.3; initial Git working tree was clean.
+- Only Java file changed: src/main/java/com/ldtteam/domumornamentum/entity/block/DynamicTimberFrameBlockEntity.java.
+- Exact previous source state: unresolved simple type ModelData in getModelData(), with no ModelData import in this file. The legacy API package used elsewhere in the old rendering code is net.neoforged.neoforge.client.model.data.ModelData; no such import was replaced in this particular file.
+- Verified NeoForge 26.3 replacement: net.neoforged.neoforge.model.data.ModelData. javap on the resolved neoforge-26.3.0.10-beta-universal.jar confirms IBlockEntityExtension.getModelData() returns this type and ModelData exposes builder().
+- Source change: added import net.neoforged.neoforge.model.data.ModelData; only. getModelData() logic, texture cache refresh, model property assignment and all behavior remain unchanged.
+- Original ModelData diagnostic disappeared: **YES**.
+- Verified java -version and javac -version: **25.0.4** before Gradle.
+- Verification: ./gradlew.bat compileJava — **BUILD FAILED in 8s**, exit code 1; compileApiJava UP-TO-DATE.
+- Remaining displayed errors: **100**, plus 20 warnings. javac's diagnostic limit remains 100; the full remaining error total is unknown.
+- Remaining displayed diagnostics in DynamicTimberFrameBlockEntity.java: **0**. No new diagnostics in this class appear in the available output; the capped build does not establish complete main-source compatibility.
+- Diagnostic comparison: the original ModelData error was removed; one additional pre-existing BakedQuad error became visible in unchanged SpecificRenderTypeBakedModelWrapper. Unrelated errors were not fixed.
+- Evidence: build/modeldata-package-compile.log, compared with build/component-input-compile.log.
+- Next recommended small batch: separately authorize fluid-overlay signatures using BlockAndLightGetter in DynamicTimberFrameBlock, FramedLightBlock and TimberFrameBlock; preserve overlay behavior and leave rendering/model classes outside that batch.
+- Outside this Java file, only PORTING_STATUS.md changed. No other sources, API, build files, resources, access transformers, workflows or metadata were modified. No commit or push.
+
+## Previous batch: block-entity component input signature
 
 - Starting checkpoint: b2b1961 on port/26.3; initial Git working tree was clean.
 - Only Java file changed: src/main/java/com/ldtteam/domumornamentum/entity/block/DynamicTimberFrameBlockEntity.java. The requested block/entities path does not exist; this is the existing class location.
