@@ -11,6 +11,7 @@ import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -267,7 +268,7 @@ public class DynamicTimberFrameBlockEntity extends AbstractMateriallyTexturedBlo
     }
 
     @Override
-    protected void applyImplicitComponents(final BlockEntity.DataComponentInput componentInput)
+    protected void applyImplicitComponents(final DataComponentGetter componentInput)
     {
         super.applyImplicitComponents(componentInput);
         MaterialTextureData testTextureData = componentInput.getOrDefault(ModDataComponents.TEXTURE_DATA, MaterialTextureData.EMPTY);

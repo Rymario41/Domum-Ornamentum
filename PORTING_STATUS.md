@@ -1,6 +1,24 @@
 # Domum Ornamentum porting status
 
-## Current batch: DirectionProperty -> EnumProperty<Direction>
+## Current batch: block-entity component input signature
+
+- Starting checkpoint: b2b1961 on port/26.3; initial Git working tree was clean.
+- Only Java file changed: src/main/java/com/ldtteam/domumornamentum/entity/block/DynamicTimberFrameBlockEntity.java. The requested block/entities path does not exist; this is the existing class location.
+- Old signature: protected void applyImplicitComponents(final BlockEntity.DataComponentInput componentInput).
+- Actual Minecraft 26.3 BlockEntity signature: protected void applyImplicitComponents(DataComponentGetter components), importing net.minecraft.core.component.DataComponentGetter. Verified in the local NeoForge-patched 26.3 sources, BlockEntity.java line 337.
+- Migrated override: protected void applyImplicitComponents(final DataComponentGetter componentInput). Added only the directly required import; no method-call changes were needed.
+- Method body preserved: super call, TEXTURE_DATA lookup with MaterialTextureData.EMPTY, random-material fallback for empty texture data, and updateTextureDataWith invocation remain unchanged.
+- Original component-input diagnostic disappeared: **YES**. No DataComponentInput, DataComponentGetter or applyImplicitComponents diagnostics in the full compiler output.
+- Verified java -version and javac -version: **25.0.4** before Gradle.
+- Verification: ./gradlew.bat compileJava — **BUILD FAILED in 2s**, exit code 1; compileApiJava UP-TO-DATE.
+- Remaining displayed compiler errors: **100**, plus 20 warnings. javac's diagnostic limit remains 100; the full error total is unknown.
+- Remaining displayed diagnostics in this file: **1**, the pre-existing unresolved ModelData return type in getModelData() at line 585 (previously line 584). No new displayed diagnostics in this file.
+- Removing the component-input diagnostic exposed one further RenderType diagnostic in unchanged SpecificRenderTypeBakedModelWrapper. No unrelated errors were fixed.
+- Evidence: build/component-input-compile.log; comparison with build/direction-property-compile.log accounts for the import's line-number shift.
+- Next recommended small batch: separately authorize the fluid-overlay signature migration to BlockAndLightGetter in DynamicTimberFrameBlock, FramedLightBlock and TimberFrameBlock, preserving overlay behavior and leaving model/color code outside that batch.
+- Outside the single Java file, only PORTING_STATUS.md changed. No API, build, resource, access-transformer, workflow, wrapper or metadata changes. No commit or push.
+
+## Previous batch: DirectionProperty -> EnumProperty<Direction>
 
 - Starting checkpoint: ace767e on port/26.3; initial Git working tree was clean.
 - Batch scope: type/import migration only in these **4 Java files**:
