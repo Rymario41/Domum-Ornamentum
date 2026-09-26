@@ -1,6 +1,24 @@
 # Domum Ornamentum porting status
 
-## Current batch: client BlockAndTintGetter package migration
+## Current batch: RenderType package migration
+
+- Starting checkpoint: c8acad6 on port/26.3; initial Git working tree was clean.
+- Only Java file changed: src/main/java/com/ldtteam/domumornamentum/client/model/baked/SpecificRenderTypeBakedModelWrapper.java.
+- Old package/type: net.minecraft.client.renderer.RenderType.
+- Verified Minecraft 26.3 package/type: net.minecraft.client.renderer.rendertype.RenderType, confirmed in the local patched Minecraft 26.3 RenderType.java source.
+- Exact source change: replaced the single import on line 5. No fields, methods, comparisons, filtering behavior, geometry, ambient occlusion, model architecture or other imports were changed.
+- Targeted previously displayed RenderType diagnostics: **6**. All six disappeared: **YES**.
+- No new diagnostics appeared in this wrapper in the available output. Its other previously displayed diagnostics remain unchanged.
+- Verified java -version and javac -version: **25.0.4** before Gradle.
+- Verification: ./gradlew.bat compileJava — **BUILD FAILED in 2s**, exit code 1; compileApiJava UP-TO-DATE.
+- Project remaining displayed errors: **100**, plus 20 warnings. javac's diagnostic limit remains 100; the full remaining total is unknown.
+- Wrapper remaining displayed diagnostics: **14**, down from 20 — BakedModel 5, BakedQuad 3, ChunkRenderTypeSet 2, ItemOverrides 2, ItemTransforms 2.
+- Removing the six targeted diagnostics exposed five further pre-existing errors in MateriallyTexturedGeometry and one in MateriallyTexturedModelLoader. Neither class was modified; unrelated errors were not fixed.
+- Evidence: build/rendertype-package-compile.log, compared with build/wrapper-analysis-compile.log.
+- Next recommended micro-batch: separately authorize only the ItemTransforms import migration in this wrapper, from net.minecraft.client.renderer.block.model.ItemTransforms to net.minecraft.client.resources.model.cuboid.ItemTransforms; target its two missing-type diagnostics while leaving getTransforms(), applyTransform() and model architecture unchanged.
+- Outside this wrapper, only PORTING_STATUS.md changed. No unrelated source, API, build, resource, access-transformer, workflow or metadata changes. No commit or push.
+
+## Previous batch: client BlockAndTintGetter package migration
 
 - Starting checkpoint: bb8322d on port/26.3; initial Git working tree was clean.
 - Only Java file changed: src/main/java/com/ldtteam/domumornamentum/client/model/baked/SpecificRenderTypeBakedModelWrapper.java.

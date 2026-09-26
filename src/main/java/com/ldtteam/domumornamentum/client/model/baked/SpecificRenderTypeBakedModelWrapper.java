@@ -2,7 +2,7 @@ package com.ldtteam.domumornamentum.client.model.baked;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
