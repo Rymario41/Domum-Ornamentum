@@ -25,7 +25,7 @@ import java.util.stream.IntStream;
  */
 public class DOStairBlock extends Block implements SimpleWaterloggedBlock
 {
-    public static final    DirectionProperty         FACING         = HorizontalDirectionalBlock.FACING;
+    public static final    EnumProperty<Direction>         FACING         = HorizontalDirectionalBlock.FACING;
     public static final    EnumProperty<Half>        HALF           = BlockStateProperties.HALF;
     public static final    EnumProperty<StairsShape> SHAPE          = BlockStateProperties.STAIRS_SHAPE;
     public static final    BooleanProperty           WATERLOGGED    = BlockStateProperties.WATERLOGGED;

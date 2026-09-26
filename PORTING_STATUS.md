@@ -1,6 +1,28 @@
 # Domum Ornamentum porting status
 
-## Current checkpoint: API source porting completed
+## Current batch: DirectionProperty -> EnumProperty<Direction>
+
+- Starting checkpoint: ace767e on port/26.3; initial Git working tree was clean.
+- Batch scope: type/import migration only in these **4 Java files**:
+  - src/main/java/com/ldtteam/domumornamentum/block/DOStairBlock.java
+  - src/main/java/com/ldtteam/domumornamentum/block/ArchitectsCutterBlock.java
+  - src/main/java/com/ldtteam/domumornamentum/block/decorative/DynamicTimberFrameBlock.java
+  - src/main/java/com/ldtteam/domumornamentum/block/decorative/TimberFrameBlock.java
+- Changed each FACING declaration to EnumProperty<Direction>. Replaced the three explicit DirectionProperty imports with EnumProperty; DOStairBlock already imports the properties package. Added the required Direction import only in TimberFrameBlock.
+- Existing property objects preserved: HorizontalDirectionalBlock.FACING in DOStairBlock and ArchitectsCutterBlock; BlockStateProperties.FACING in DynamicTimberFrameBlock and TimberFrameBlock. No behavior, constructors, states or serialization changed.
+- Previously visible diagnostics targeted: **7**.
+- All DirectionProperty diagnostics disappeared: **YES**; zero occurrences in the complete compiler log.
+- Verified java -version and javac -version: **25.0.4** before Gradle.
+- Verification command: ./gradlew.bat compileJava.
+- Result: **BUILD FAILED in 2s**, exit code 1, at compileJava; compileApiJava remains UP-TO-DATE.
+- Remaining displayed errors: **100**, plus 20 warnings. javac's diagnostic limit remains 100; the full error total is unknown.
+- Newly displayed diagnostics: seven existing rendering/model errors in unchanged SpecificRenderTypeBakedModelWrapper, exposed after removing the seven DirectionProperty diagnostics.
+- No new displayed errors in the four migrated files. DOStairBlock and ArchitectsCutterBlock have no displayed errors; DynamicTimberFrameBlock retains one and TimberFrameBlock retains two pre-existing BlockAndTintGetter errors. Diagnostic comparison accounts for the added import line.
+- Log: build/direction-property-compile.log. Unrelated compilation errors were not fixed.
+- Next recommended batch from the previous analysis: migrate the block-entity component input signature from BlockEntity.DataComponentInput to DataComponentGetter in DynamicTimberFrameBlockEntity, as a separately authorized small batch.
+- Outside the four Java files, only PORTING_STATUS.md was changed. API sources, other main sources, build files, resources and access transformers were preserved. No commit or push.
+
+## Previous checkpoint: API source porting completed
 
 - Date: **2026-09-26**.
 - Branch: **port/26.3**.
