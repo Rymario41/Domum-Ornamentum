@@ -1,6 +1,24 @@
 # Domum Ornamentum porting status
 
-## Current batch: ModelData package migration
+## Current batch: client BlockAndTintGetter package migration
+
+- Starting checkpoint: bb8322d on port/26.3; initial Git working tree was clean.
+- Only Java file changed: src/main/java/com/ldtteam/domumornamentum/client/model/baked/SpecificRenderTypeBakedModelWrapper.java.
+- Old type/import: net.minecraft.world.level.BlockAndTintGetter.
+- Verified Minecraft 26.3 replacement: net.minecraft.client.renderer.block.BlockAndTintGetter. Inspected its actual patched Minecraft source (client-only interface extending BlockAndLightGetter); javap on NeoForge 26.3.0.10-beta confirms BlockStateModelExtension.createGeometryKey, collectParts, particleMaterial and materialFlags accept this client type.
+- The old BakedModel getModelData(...) override is not a current BlockStateModelExtension hook. This batch resolves only its parameter type; complete model-interface compatibility remains a later migration.
+- Exact source change: replaced that single import. No method signatures/bodies, ModelData logic, ambient occlusion, rendering behavior, geometry or other imports were changed. BlockAndLightGetter was not substituted.
+- Targeted BlockAndTintGetter diagnostics disappeared: **YES**, both previously displayed diagnostics (import and getModelData parameter) were removed. No new diagnostic appeared in this wrapper in the available compiler output.
+- Verified java -version and javac -version: **25.0.4** before Gradle.
+- Verification: ./gradlew.bat compileJava — **BUILD FAILED in 2s**, exit code 1; compileApiJava UP-TO-DATE.
+- Remaining displayed errors: **100**, plus 20 warnings. javac's diagnostic limit remains 100; the full remaining error total is unknown.
+- Remaining displayed diagnostics in SpecificRenderTypeBakedModelWrapper: **20** — RenderType 6, BakedModel 5, BakedQuad 3, ChunkRenderTypeSet 2, ItemOverrides 2, ItemTransforms 2. All are unchanged pre-existing diagnostics.
+- Two additional pre-existing IUnbakedGeometry diagnostics became visible in unchanged MateriallyTexturedGeometry. No unrelated errors were fixed.
+- Evidence: build/client-blockandtintgetter-compile.log, compared with build/models-modeldata-compile.log.
+- Next recommended small batch: separately authorize fluid-overlay type/import migration to BlockAndLightGetter in FramedLightBlock.java, preserving its method body and excluding client model/color code.
+- Outside this wrapper, only PORTING_STATUS.md changed. No other sources, API, build files, resources, access transformers, workflows or metadata changed. No commit or push.
+
+## Previous batch: ModelData package migration
 
 - Starting checkpoint: 323c7d7 on port/26.3; initial Git working tree was clean.
 - Scope: three rendering-model imports only. Exact Java files changed:
