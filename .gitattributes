@@ -3,3 +3,5 @@
 # are changed when only line endings change.
 src/datagen/generated/**/.cache/cache text eol=lf
 src/datagen/generated/**/*.json text eol=lf
+gradlew text eol=lf
+gradlew.bat text eol=crlf

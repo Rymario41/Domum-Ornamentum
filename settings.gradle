@@ -9,10 +9,26 @@ pluginManagement {
     }
 }
 
+// Load the same Tableau release directly so its NeoGradle dependency can be
+// selected alongside the official 26.3 MDK version on one buildscript classpath.
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        gradlePluginPortal()
+        maven { url = uri('https://ldtteam.jfrog.io/artifactory/tableau/') }
+        maven { url = uri('https://maven.neoforged.net/releases') }
+    }
+    dependencies {
+        classpath 'com.ldtteam.tableau:Tableau:0.0.87'
+        classpath 'net.neoforged.gradle:userdev:7.1.39'
+    }
+}
 plugins {
-    id 'com.ldtteam.tableau' version '0.0.87'
     id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
 }
+
+apply plugin: com.ldtteam.tableau.TableauPlugin
 
 rootProject.name = 'domum-ornamentum'
 
