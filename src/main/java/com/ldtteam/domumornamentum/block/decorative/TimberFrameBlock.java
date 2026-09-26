@@ -22,7 +22,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.BlockAndLightGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.LevelReader;
@@ -86,7 +86,7 @@ public class TimberFrameBlock extends AbstractBlock<TimberFrameBlock> implements
     }
 
     @Override
-    public boolean shouldDisplayFluidOverlay(final BlockState state, final BlockAndTintGetter level, final BlockPos pos, final FluidState fluidState)
+    public boolean shouldDisplayFluidOverlay(final BlockState state, final BlockAndLightGetter level, final BlockPos pos, final FluidState fluidState)
     {
         return true;
     }

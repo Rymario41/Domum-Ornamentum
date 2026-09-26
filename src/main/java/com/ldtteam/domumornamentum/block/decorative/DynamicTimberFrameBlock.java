@@ -178,7 +178,7 @@ public class DynamicTimberFrameBlock extends AbstractBlock<DynamicTimberFrameBlo
     }
 
     @Override
-    public boolean shouldDisplayFluidOverlay(final BlockState state, final BlockAndTintGetter level, final BlockPos pos, final FluidState fluidState)
+    public boolean shouldDisplayFluidOverlay(final BlockState state, final BlockAndLightGetter level, final BlockPos pos, final FluidState fluidState)
     {
         return true;
     }

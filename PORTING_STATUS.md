@@ -1,6 +1,27 @@
 # Domum Ornamentum porting status
 
-## Current batch: ModelData package migration
+## Current batch: block world-access interface migration
+
+- Starting checkpoint: b351925 on port/26.3; initial Git working tree was clean.
+- Exactly two Java files changed:
+  - src/main/java/com/ldtteam/domumornamentum/block/decorative/DynamicTimberFrameBlock.java
+  - src/main/java/com/ldtteam/domumornamentum/block/decorative/TimberFrameBlock.java
+- Old override in both files: public boolean shouldDisplayFluidOverlay(final BlockState state, final BlockAndTintGetter level, final BlockPos pos, final FluidState fluidState), using the obsolete net.minecraft.world.level.BlockAndTintGetter type.
+- Verified actual NeoForge 26.3.0.10-beta API with javap on the resolved universal jar: IBlockExtension.shouldDisplayFluidOverlay(BlockState, net.minecraft.world.level.BlockAndLightGetter, BlockPos, FluidState) returns boolean. IBlockStateExtension.shouldDisplayFluidOverlay(net.minecraft.world.level.BlockAndLightGetter, BlockPos, FluidState) also returns boolean.
+- New override in both files: public boolean shouldDisplayFluidOverlay(final BlockState state, final BlockAndLightGetter level, final BlockPos pos, final FluidState fluidState).
+- TimberFrameBlock's explicit import changed to net.minecraft.world.level.BlockAndLightGetter. DynamicTimberFrameBlock uses its existing net.minecraft.world.level.* import.
+- Both method bodies remain exactly return true; fluid-overlay behavior and all placement/state logic were preserved. No global or client-renderer type replacement was performed.
+- Targeted previously displayed diagnostics: **3**. All three disappeared: **YES**.
+- Verified java -version and javac -version: **25.0.4** before Gradle.
+- Verification: ./gradlew.bat compileJava — **BUILD FAILED in 2s**, exit code 1; compileApiJava UP-TO-DATE.
+- Remaining displayed compiler errors: **100**, plus 20 warnings. javac's diagnostic limit remains 100; the full remaining error total is unknown.
+- Remaining displayed diagnostics in the two changed files: **0**; no new diagnostics appeared in either file in the available output. This capped build does not establish complete source compatibility.
+- Three additional pre-existing model diagnostics became visible in unchanged SpecificRenderTypeBakedModelWrapper: BakedQuad, ModelData and RenderType. Unrelated errors were not fixed.
+- Evidence: build/block-world-access-compile.log, compared with build/modeldata-package-compile.log.
+- Recommended next small batch: separately authorize the same verified fluid-overlay type/import migration in FramedLightBlock.java, preserving its method body and excluding client model/color code.
+- Outside these two Java files, only PORTING_STATUS.md changed. No other sources, API, build files, resources, access transformers, metadata or workflows were modified. No commit or push.
+
+## Previous batch: ModelData package migration
 
 - Starting checkpoint: 024c51f on port/26.3; initial Git working tree was clean.
 - Only Java file changed: src/main/java/com/ldtteam/domumornamentum/entity/block/DynamicTimberFrameBlockEntity.java.
