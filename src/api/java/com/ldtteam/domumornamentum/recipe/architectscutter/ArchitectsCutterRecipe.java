@@ -153,7 +153,10 @@ public class ArchitectsCutterRecipe implements Recipe<ArchitectsCutterRecipeInpu
         return "";
     }
 
-    @Override
+    /**
+     * Returns the preview stack for the cutter UI and recipe integrations.
+     * This is a Domum helper, not part of the Minecraft Recipe interface.
+     */
     public @NotNull ItemStack getResultItem(final HolderLookup.Provider provider)
     {
         final Block generatedBlock = getBlock();

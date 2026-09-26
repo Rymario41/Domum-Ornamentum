@@ -12,7 +12,7 @@ public class ModRecipeSerializers
 {
     public static final DeferredRegister<RecipeSerializer<?>> SERIALIZERS = DeferredRegister.create(BuiltInRegistries.RECIPE_SERIALIZER, Constants.MOD_ID);
 
-    public static DeferredHolder<RecipeSerializer<?>, RecipeSerializer<ArchitectsCutterRecipe>> ARCHITECTS_CUTTER  = SERIALIZERS.register("architects_cutter", () -> new RecipeSerializer<>(ArchitectsCutterRecipe.CODEC, ArchitectsCutterRecipe.STREAM_CODEC));
+    public static DeferredHolder<RecipeSerializer<?>, RecipeSerializer<ArchitectsCutterRecipe>> ARCHITECTS_CUTTER  = SERIALIZERS.register("architects_cutter", ArchitectsCutterRecipeSerializer::create);
 
     private ModRecipeSerializers()
     {

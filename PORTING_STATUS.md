@@ -1,5 +1,82 @@
 # Domum Ornamentum porting status
 
+## Current checkpoint: API source porting completed
+
+- Date: **2026-09-26**.
+- Branch: **port/26.3**.
+- Starting checkpoint: **3bea189**, with a clean Git working tree.
+- Scope: **API source porting only**; the committed build/configuration migration was preserved.
+- Minecraft: **26.3**; NeoForge: **26.3.0.10-beta**.
+- Java/javac: **25.0.4**; Gradle: **9.2.1**; NeoGradle: **7.1.39**.
+- compileApiJava error count before: **13** (10 inherited from the official 26.1 baseline and 3 additional Criterion diagnostics).
+- compileApiJava error count after: **0**. All 13 reported API errors are resolved.
+- Command: ./gradlew.bat compileApiJava — **BUILD SUCCESSFUL in 9s**, exit code 0.
+- Command: ./gradlew.bat build — **BUILD FAILED in 7s**, exit code 1.
+- Full build reached :compileJava: **YES**, with :compileApiJava UP-TO-DATE.
+- Final category: **MAIN-C** — the API compiles; main source compilation still requires porting.
+- Remaining main compilation errors: **100 displayed** (the default diagnostic limit); the full total is not established. All 100 displayed compiler errors originate in src/main/java. Repeated diagnostics in the Gradle failure summary and Javadoc are not counted as additional Java compilation errors.
+- Main compilation also reported **20 warnings**.
+- The full build additionally failed at :javadoc on unresolved main-source APIs (100 displayed Javadoc errors).
+- :apiJavadoc completed with one existing unresolved @see warning in MaterialTextureData: BlockEntity#saveToItem(ItemStack, HolderLookup.Provider). This non-blocking documentation reference was left outside the compilation-only scope.
+- Work stopped after the full build exposed main-source failures. No main API migration was attempted.
+
+## Exact files changed in this API stage
+
+All paths below are relative to this repository.
+
+1. src/api/java/com/ldtteam/domumornamentum/recipe/architectscutter/ArchitectsCutterRecipeBuilder.java
+   - Move Criterion and RecipeUnlockedTrigger imports to net.minecraft.advancements.triggers.
+   - Create a ResourceKey<Recipe<?>> in Registries.RECIPE for output and advancement rewards.
+   - Resolve the recipe holder through RecipeOutput.lookup(Registries.RECIPE).getOrThrow(recipeKey) for the unlock trigger, following the actual 26.3 RecipeUnlockAdvancementBuilder.
+   - Preserve Identifier-based public save entry points, advancement identifiers, OR requirements, supplied criteria, and the no-criteria branch that emits no advancement.
+2. src/api/java/com/ldtteam/domumornamentum/recipe/architectscutter/ArchitectsCutterRecipeSerializer.java
+   - Replace the invalid implementation of the now-final RecipeSerializer record with a factory creating the native record.
+   - Reuse the exact existing persistent and network codecs; no placeholder serializer or codec changes.
+3. src/api/java/com/ldtteam/domumornamentum/recipe/ModRecipeSerializers.java
+   - Register through that factory, retaining the serializer ID and the same native serializer/codecs.
+4. src/api/java/com/ldtteam/domumornamentum/recipe/architectscutter/ArchitectsCutterRecipe.java
+   - Retain getResultItem(HolderLookup.Provider) and its implementation as a Domum preview helper used by existing cutter UI/recipe integration callers.
+   - Remove its obsolete @Override, since the actual 26.3 Recipe interface has no such method, and document its role. Assembly and matching behavior remain unchanged.
+5. src/api/java/com/ldtteam/domumornamentum/client/model/data/MaterialTextureData.java
+   - Migrate legacy NBT reading to CompoundTag.keySet() and getStringOr(key, "").
+   - Retrieve the block value with BuiltInRegistries.BLOCK.getValue, rather than the new Optional holder-returning get.
+   - Preserve the NBT string mapping format, empty-tag behavior and defaulted block registry lookup.
+6. PORTING_STATUS.md — this status update; the only changed project file outside src/api/java.
+
+No project files were added. Ignored build outputs/logs and hash evidence were generated under build/; Gradle cache and temporary files remain under .gradle/.
+
+## API-stage verification and preservation
+
+Actual signatures were inspected in the NeoForge-patched Minecraft 26.3 sources under build/neoForm/neoFormJoined26.3-1/steps/transformSource/transformed, including Recipe, RecipeSerializer, RecipeOutput, RecipeUnlockAdvancementBuilder, RecipeUnlockedTrigger, Criterion, CompoundTag, Registry and DefaultedRegistry.
+
+Before each Gradle invocation, java -version and javac -version both reported **25.0.4**, using C:\Program Files\Java\jdk-25.0.4. The process-local environment is documented in the historical section below. No build options or compiler settings were changed to suppress errors.
+
+Evidence:
+
+- Initial Git status: build/api-stage-git-before.txt — clean.
+- Initial tracked/nonignored file hashes: build/api-stage-files-before.json.
+- Main source SHA-256 manifests: build/api-stage-main-before.json and build/api-stage-main-after.json.
+- API compilation log: build/api-stage-compile.log.
+- Full build log: build/api-stage-full-build.log.
+- **212 main Java files compared: zero content differences, additions or removals.**
+- Build files, dependency declarations, wrapper, workflows, mod metadata, publishing configuration, access transformers and resources are unchanged in this stage.
+- git diff --check: **PASS**.
+- No compatibility stubs, unsafe casts, error suppression, source exclusions or disabled functionality were introduced.
+
+## Outstanding validation and next stage
+
+- **Four access transformer warnings remain unresolved**: BakedQuad field wildcard, BakedQuad.hasAmbientOcclusion, RecipeProvider.getName() and LootTableProvider.getName(). They were recorded during the previous 26.3 transformation; this stage reused its up-to-date outputs. The active AT file was not modified.
+- **Runtime, datagen execution and tests remain UNVERIFIED**. Compilation does not establish runtime behavior or generated recipe/advancement correctness.
+- **CI and publishing/release remain UNVERIFIED** and must not be considered production-ready.
+- The next recommended stage is separately authorized src/main/java migration. Current diagnostics include block properties, renderer/model/color APIs and block-entity APIs; none were repaired here.
+- After main compilation is repaired, manually validate cutter crafting and previews, recipe unlocking/datagen, serializer synchronization and legacy material NBT loading.
+- Suggested manual backup / checkpoint: **Domum-Ornamentum-26.3-api-compile-success-MAIN-C**.
+- No commit or push was performed.
+
+The remaining sections retain the earlier build/configuration checkpoint as history. Their 13-error API result and unchanged API-source statements describe the state before this API stage.
+
+## Historical build/configuration checkpoint (before API source porting)
+
 ## Source checkpoint
 
 - Current branch: `port/26.3`.
@@ -28,13 +105,13 @@ The existing baseline problems report was preserved as `build/port-baseline-26.1
 - Target Gradle: **9.2.1**.
 - Tableau: **0.0.87 retained**, not substantially replaced.
 - Foojay resolver: **1.0.0 retained**.
-- Java/API implementation: **NOT STARTED**.
+- Java/API implementation at the build/configuration checkpoint: **NOT STARTED**. The subsequent API-only stage is recorded above.
 
 `settings.gradle` now loads the same Tableau core directly together with NeoGradle 7.1.39 on one buildscript classpath. This replaces only the settings bootstrap's separate classpath mechanism. The local cache contains the resolved `userdev-7.1.39.jar`; the target API dependency report identifies NeoForge 26.3.0.10-beta.
 
 `build.gradle` and `gradle/dependencies.gradle` remain unchanged. The `api` source set remains a mod source and part of the primary jar, and `main` still depends on it. Tableau retains its run, resource, archive and publication facilities. Previously commented JEI/datagenerators declarations remain as found in the official base; no dependency or feature was disabled by this work.
 
-## Exact files changed
+## Files changed in the earlier build/configuration stage
 
 Modified tracked files:
 
@@ -56,7 +133,7 @@ Added files:
 
 Ignored verification logs, source hash manifests, preserved baseline report and Gradle caches are contained within this repository's `build/` and `.gradle/` directories.
 
-## Source preservation
+## Source preservation in the earlier build/configuration stage
 
 - `src/main/java`: **UNCHANGED**, 212 Java files.
 - `src/api/java`: **UNCHANGED**, 20 Java files.
@@ -95,7 +172,7 @@ Verification performed:
 
 The first 26.3 build invocation was interrupted before it produced a final result. Its partial log was preserved as `build/port-26.3-interrupted-build.log`; the full build was subsequently rerun with the same configuration. An interrupted attempt is not classified as a successful or failed completed build.
 
-## Final build result and baseline comparison
+## Earlier build/configuration result and baseline comparison
 
 - Build/configuration stage: **COMPLETED** to the authorized category C stopping point.
 - Gradle configuration: **SUCCEEDED**.
@@ -142,7 +219,7 @@ The AT file remains active and byte-for-byte unchanged. The warnings are visible
 - **Publishing/release: UNVERIFIED and not production-ready**. No upload, remote publish or release workflow was run. Full API/main jar contents and Javadoc completion remain unverified.
 - The generated POM retains Tableau's current conventions: local version `1.0.0-local`, Git-derived fork URLs, `pom` packaging and the `GNU Lesser General Public License v3.0` label produced by the unchanged `usingGnu3License()` configuration. The mod metadata still declares `GPL3`. These publication details require review before release; they were not silently rewritten in this build-only stage.
 
-Next stage requires separate authorization: address the API errors first, then compile main sources, review changed AT targets, and only then validate runtime/datagen and CI/publishing.
+The subsequent API source stage has now been completed as recorded at the top of this document. Further work requires authorization to port main sources and review AT targets, followed by runtime/datagen and CI/publishing validation.
 
 Suggested manual backup / checkpoint: `Domum-Ornamentum-26.3-build-system-C`.
 

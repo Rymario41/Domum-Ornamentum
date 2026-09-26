@@ -101,9 +101,9 @@ public record MaterialTextureData(Map<Identifier, Block> getTexturedComponents)
             return EMPTY;
 
         final Builder newData = new Builder();
-        nbt.getAllKeys().forEach(key -> {
-            final Identifier name = Identifier.parse(nbt.getString(key));
-                newData.setComponent(Identifier.parse(key), BuiltInRegistries.BLOCK.get(name));
+        nbt.keySet().forEach(key -> {
+            final Identifier name = Identifier.parse(nbt.getStringOr(key, ""));
+            newData.setComponent(Identifier.parse(key), BuiltInRegistries.BLOCK.getValue(name));
         });
         return newData.build();
     }

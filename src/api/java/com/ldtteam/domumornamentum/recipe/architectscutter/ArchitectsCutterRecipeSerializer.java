@@ -1,22 +1,18 @@
 package com.ldtteam.domumornamentum.recipe.architectscutter;
 
-import com.mojang.serialization.MapCodec;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 
-public class ArchitectsCutterRecipeSerializer implements RecipeSerializer<ArchitectsCutterRecipe>
+/**
+ * Creates the native recipe serializer with the cutter's persistent and network codecs.
+ */
+public final class ArchitectsCutterRecipeSerializer
 {
-
-    @Override
-    public MapCodec<ArchitectsCutterRecipe> codec()
+    private ArchitectsCutterRecipeSerializer()
     {
-        return ArchitectsCutterRecipe.CODEC;
     }
 
-    @Override
-    public StreamCodec<RegistryFriendlyByteBuf, ArchitectsCutterRecipe> streamCodec()
+    public static RecipeSerializer<ArchitectsCutterRecipe> create()
     {
-        return ArchitectsCutterRecipe.STREAM_CODEC;
+        return new RecipeSerializer<>(ArchitectsCutterRecipe.CODEC, ArchitectsCutterRecipe.STREAM_CODEC);
     }
 }
